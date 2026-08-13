@@ -1,17 +1,17 @@
 """
 MongoDB connection and database initialization using Motor (async MongoDB driver).
 """
-from motor.motor_asyncio import AsyncClient, AsyncDatabase
+from motor.motor_asyncio import AsyncIOMotorClient, AsyncIOMotorDatabase
 from config import get_settings
 import logging
 
 logger = logging.getLogger(__name__)
 
 # Global database instance
-db: AsyncDatabase = None
+db: AsyncIOMotorDatabase = None
 
 
-async def connect_to_mongo() -> AsyncDatabase:
+async def connect_to_mongo() -> AsyncIOMotorDatabase:
     """
     Establish connection to MongoDB Atlas.
     Returns the database instance.
@@ -24,7 +24,7 @@ async def connect_to_mongo() -> AsyncDatabase:
         raise ValueError('MONGO_URI is not defined in environment variables.')
 
     try:
-        client = AsyncClient(settings.mongo_uri)
+        client = AsyncIOMotorClient(settings.mongo_uri)
         # Verify connection
         await client.admin.command('ping')
 
@@ -44,7 +44,7 @@ async def close_mongo_connection() -> None:
         logger.info('MongoDB connection closed')
 
 
-def get_database() -> AsyncDatabase:
+def get_database() -> AsyncIOMotorDatabase:
     """Get the current database instance."""
     if db is None:
         raise RuntimeError('Database not connected. Call connect_to_mongo() first.')

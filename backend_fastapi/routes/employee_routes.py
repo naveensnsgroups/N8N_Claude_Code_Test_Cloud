@@ -2,10 +2,10 @@
 Employee API routes.
 Equivalent to Express employeeRoutes.js
 """
-from fastapi import APIRouter, Depends, Query, status
+from fastapi import APIRouter, Depends, Query, Request, status
 from slowapi import Limiter
 from slowapi.util import get_remote_address
-from motor.motor_asyncio import AsyncDatabase
+from motor.motor_asyncio import AsyncIOMotorDatabase
 
 from database import get_database
 from models import EmployeeCreate, EmployeeUpdate, EmployeeResponse, PaginatedEmployeeResponse
@@ -30,9 +30,10 @@ limiter = Limiter(key_func=get_remote_address)
 )
 @limiter.limit('100/15minutes')
 async def list_employees(
+    request: Request,
     page: int = Query(1, ge=1, description='Page number (starting from 1)'),
     limit: int = Query(50, ge=1, le=100, description='Number of records per page'),
-    db: AsyncDatabase = Depends(get_database)
+    db: AsyncIOMotorDatabase = Depends(get_database)
 ):
     """
     Get all employees with pagination.
@@ -54,8 +55,9 @@ async def list_employees(
 )
 @limiter.limit('100/15minutes')
 async def retrieve_employee(
+    request: Request,
     employee_id: str,
-    db: AsyncDatabase = Depends(get_database)
+    db: AsyncIOMotorDatabase = Depends(get_database)
 ):
     """
     Get a single employee by ID.
@@ -76,8 +78,9 @@ async def retrieve_employee(
 )
 @limiter.limit('100/15minutes')
 async def create_new_employee(
+    request: Request,
     employee_data: EmployeeCreate,
-    db: AsyncDatabase = Depends(get_database)
+    db: AsyncIOMotorDatabase = Depends(get_database)
 ):
     """
     Create a new employee.
@@ -107,9 +110,10 @@ async def create_new_employee(
 )
 @limiter.limit('100/15minutes')
 async def update_existing_employee(
+    request: Request,
     employee_id: str,
     employee_data: EmployeeUpdate,
-    db: AsyncDatabase = Depends(get_database)
+    db: AsyncIOMotorDatabase = Depends(get_database)
 ):
     """
     Update an existing employee.
@@ -132,8 +136,9 @@ async def update_existing_employee(
 )
 @limiter.limit('100/15minutes')
 async def delete_existing_employee(
+    request: Request,
     employee_id: str,
-    db: AsyncDatabase = Depends(get_database)
+    db: AsyncIOMotorDatabase = Depends(get_database)
 ):
     """
     Delete an employee.

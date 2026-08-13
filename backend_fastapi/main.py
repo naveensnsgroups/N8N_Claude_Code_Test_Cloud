@@ -63,7 +63,6 @@ app = FastAPI(
 
 # Add rate limiter to app
 app.state.limiter = limiter
-app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
 
 def _rate_limit_exceeded_handler(request: Request, exc: RateLimitExceeded) -> JSONResponse:
@@ -75,6 +74,9 @@ def _rate_limit_exceeded_handler(request: Request, exc: RateLimitExceeded) -> JS
             'message': 'Too many requests, please try again later.'
         }
     )
+
+
+app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
 
 # ─── Security Middleware ──────────────────────────────────────────────────

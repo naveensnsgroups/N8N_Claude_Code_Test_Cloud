@@ -3,6 +3,7 @@ Configuration module for FastAPI application.
 Handles environment variables and app settings.
 """
 from pydantic_settings import BaseSettings
+from pydantic import Field
 from functools import lru_cache
 import os
 
@@ -20,7 +21,10 @@ class Settings(BaseSettings):
     # Server
     host: str = os.getenv('HOST', '0.0.0.0')
     port: int = int(os.getenv('PORT', 5000))
-    environment: str = os.getenv('NODE_ENV', 'development')
+    environment: str = Field(
+        default='development',
+        validation_alias='NODE_ENV',
+    )
 
     # CORS
     client_url: str = os.getenv('CLIENT_URL', 'http://localhost:5173')

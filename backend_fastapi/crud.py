@@ -2,7 +2,7 @@
 CRUD operations for Employee collection.
 Equivalent to Express controller operations.
 """
-from motor.motor_asyncio import AsyncDatabase
+from motor.motor_asyncio import AsyncIOMotorDatabase
 from bson import ObjectId
 from pymongo.errors import DuplicateKeyError
 from models import EmployeeCreate, EmployeeUpdate, EmployeeResponse
@@ -59,7 +59,7 @@ def is_valid_object_id(id_str: str) -> bool:
 
 
 async def get_all_employees(
-    db: AsyncDatabase,
+    db: AsyncIOMotorDatabase,
     page: int = 1,
     limit: int = 50
 ) -> dict:
@@ -95,7 +95,7 @@ async def get_all_employees(
     }
 
 
-async def get_employee_by_id(db: AsyncDatabase, employee_id: str) -> dict:
+async def get_employee_by_id(db: AsyncIOMotorDatabase, employee_id: str) -> dict:
     """
     Get a single employee by ID.
     @route   GET /api/employees/:id
@@ -119,7 +119,7 @@ async def get_employee_by_id(db: AsyncDatabase, employee_id: str) -> dict:
     return {'success': True, 'data': employee}
 
 
-async def create_employee(db: AsyncDatabase, employee_data: EmployeeCreate) -> dict:
+async def create_employee(db: AsyncIOMotorDatabase, employee_data: EmployeeCreate) -> dict:
     """
     Create a new employee.
     @route   POST /api/employees
@@ -152,7 +152,7 @@ async def create_employee(db: AsyncDatabase, employee_data: EmployeeCreate) -> d
 
 
 async def update_employee(
-    db: AsyncDatabase,
+    db: AsyncIOMotorDatabase,
     employee_id: str,
     employee_data: EmployeeUpdate
 ) -> dict:
@@ -205,7 +205,7 @@ async def update_employee(
         )
 
 
-async def delete_employee(db: AsyncDatabase, employee_id: str) -> dict:
+async def delete_employee(db: AsyncIOMotorDatabase, employee_id: str) -> dict:
     """
     Delete an employee.
     @route   DELETE /api/employees/:id
